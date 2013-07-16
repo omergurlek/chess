@@ -39,7 +39,6 @@ public class Renderer {
 		skin.addRegions(atlas);
 
 		boardTexture = new Texture("data/board.png");
-		boardTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		redTexture = new Texture("data/redtile.png");
 		blueTexture = new Texture("data/bluetile.png");
 		

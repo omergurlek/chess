@@ -49,7 +49,7 @@ public class Board {
 
 	public boolean isOccupied(int x, int y){
 		Tile tile = getTile(x, y);
-		
+
 		if(tile != null)
 			return tile.isOccupied();
 		else
@@ -66,5 +66,26 @@ public class Board {
 		}
 		else
 			return tiles[x][y];
+	}
+
+	public Piece[] getPieces(PieceColor color){
+		Piece[] pieces = new Piece[16];
+		Piece piece = null;
+		int i = 0;
+
+		for(Tile[] row : this.tiles){
+			for(Tile tile : row){
+				if(tile.isOccupied()){
+					piece = tile.getPiece();
+
+					if(piece.getColor() == color){
+						pieces[i] = piece;
+						i++;
+					}
+				}
+			}
+		}
+
+		return pieces;
 	}
 }
