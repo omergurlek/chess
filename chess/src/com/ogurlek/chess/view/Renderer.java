@@ -8,11 +8,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.ogurlek.chess.model.board.Board;
-import com.ogurlek.chess.model.board.Tile;
-import com.ogurlek.chess.model.pieces.Piece;
-import com.ogurlek.chess.model.pieces.PieceColor;
-import com.ogurlek.chess.model.pieces.PieceType;
+import com.ogurlek.chess.model.Piece;
+import com.ogurlek.chess.model.PieceColor;
+import com.ogurlek.chess.model.PieceType;
+import com.ogurlek.chess.model.Tile;
 
 public class Renderer {
 

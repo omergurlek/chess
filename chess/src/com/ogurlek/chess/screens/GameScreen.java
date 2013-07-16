@@ -2,7 +2,7 @@ package com.ogurlek.chess.screens;
 
 import com.badlogic.gdx.Screen;
 import com.ogurlek.chess.Chess;
-import com.ogurlek.chess.model.board.Board;
+import com.ogurlek.chess.view.Board;
 import com.ogurlek.chess.view.Renderer;
 
 public class GameScreen implements Screen{
