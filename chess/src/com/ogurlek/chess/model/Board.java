@@ -39,7 +39,7 @@ public class Board {
 						case 4: tempType = PieceType.KING; break;
 						}
 					}
-					
+
 					tempPiece = new Piece(tiles[x][y], tempType, tempColor);
 					tiles[x][y].occupy(tempPiece);
 				}
@@ -47,11 +47,24 @@ public class Board {
 		}
 	}
 
+	public boolean isOccupied(int x, int y){
+		Tile tile = getTile(x, y);
+		
+		if(tile != null)
+			return tile.isOccupied();
+		else
+			return true;
+	}
+
 	public Tile[][] getTiles(){
 		return tiles;
 	}
 
 	public Tile getTile(int x, int y){
-		return tiles[x][y];
+		if((x>=8) || (x<0) || (y>=8) || (y<0)){
+			return null;
+		}
+		else
+			return tiles[x][y];
 	}
 }

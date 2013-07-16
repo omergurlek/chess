@@ -1,12 +1,16 @@
 package com.ogurlek.chess.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.ogurlek.chess.controller.GameWorld;
 import com.ogurlek.chess.model.Piece;
@@ -22,6 +26,8 @@ public class Renderer {
 	Sprite boardSprite;
 	TextureAtlas atlas;
 	Skin skin;
+	ShapeRenderer sr;
+	OrthographicCamera camera;
 	
 	public Renderer(GameWorld world){
 		this.world = world;
@@ -35,6 +41,11 @@ public class Renderer {
 
 		boardSprite = new Sprite(boardTexture);
 		boardSprite.setY(40);
+		
+        sr = new ShapeRenderer();
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.update();
 	}
 	
 	public void render(){
@@ -42,16 +53,25 @@ public class Renderer {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		Tile[][] tiles = world.getBoard().getTiles();
+		int[][] movement = world.getMovement();
 		Piece tempPiece;
 		PieceType tempPieceType;
 		Sprite tempSprite = null;
 		
+		camera.update();
+		sr.setProjectionMatrix(camera.combined);
+		
 		batch.begin();
-		
+        sr.begin(ShapeType.FilledRectangle);
+
 		boardSprite.draw(batch);
-		
+				
 		for(int y=0; y<8; y++){
 			for(int x=0; x<8; x++){
+				if(movement[x][y] == 1){
+//					to-do: draw the movement boxes
+					}
+
 				if(tiles[x][y].isOccupied()){
 					tempPiece = tiles[x][y].getPiece();
 					tempPieceType = tempPiece.getType();
@@ -72,6 +92,7 @@ public class Renderer {
 			}
 		}
 		
+        sr.end();
 		batch.end();
 	}
 }
