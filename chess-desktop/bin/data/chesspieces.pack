@@ -1,0 +1,89 @@
+
+chesspieces.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+bbishop
+  rotate: false
+  xy: 1, 165
+  size: 50, 80
+  orig: 50, 80
+  offset: 0, 0
+  index: -1
+bishop
+  rotate: false
+  xy: 1, 83
+  size: 50, 80
+  orig: 50, 80
+  offset: 0, 0
+  index: -1
+bking
+  rotate: false
+  xy: 53, 165
+  size: 50, 80
+  orig: 50, 80
+  offset: 0, 0
+  index: -1
+bknight
+  rotate: false
+  xy: 1, 1
+  size: 50, 80
+  orig: 50, 80
+  offset: 0, 0
+  index: -1
+bpawn
+  rotate: false
+  xy: 53, 83
+  size: 50, 80
+  orig: 50, 80
+  offset: 0, 0
+  index: -1
+bqueen
+  rotate: false
+  xy: 105, 165
+  size: 50, 80
+  orig: 50, 80
+  offset: 0, 0
+  index: -1
+brook
+  rotate: false
+  xy: 53, 1
+  size: 50, 80
+  orig: 50, 80
+  offset: 0, 0
+  index: -1
+king
+  rotate: false
+  xy: 105, 83
+  size: 50, 80
+  orig: 50, 80
+  offset: 0, 0
+  index: -1
+knight
+  rotate: false
+  xy: 157, 165
+  size: 50, 80
+  orig: 50, 80
+  offset: 0, 0
+  index: -1
+pawn
+  rotate: false
+  xy: 105, 1
+  size: 50, 80
+  orig: 50, 80
+  offset: 0, 0
+  index: -1
+queen
+  rotate: false
+  xy: 157, 83
+  size: 50, 80
+  orig: 50, 80
+  offset: 0, 0
+  index: -1
+rook
+  rotate: false
+  xy: 157, 1
+  size: 50, 80
+  orig: 50, 80
+  offset: 0, 0
+  index: -1
