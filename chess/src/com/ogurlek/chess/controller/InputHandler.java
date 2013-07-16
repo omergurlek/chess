@@ -18,7 +18,6 @@ public class InputHandler implements InputProcessor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if((screenY >= 110) && (screenY <= 590))	{
-			System.out.println("Touched x:"+screenX+" y:"+screenY);
 			world.touchedBoard(screenX, screenY - 110);
 			return true;
 		}

@@ -5,7 +5,6 @@ import com.ogurlek.chess.model.Board;
 import com.ogurlek.chess.model.GameState;
 import com.ogurlek.chess.model.Piece;
 import com.ogurlek.chess.model.PieceColor;
-import com.ogurlek.chess.model.PieceType;
 import com.ogurlek.chess.model.Tile;
 
 public class GameWorld {

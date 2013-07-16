@@ -24,58 +24,53 @@ public class Renderer {
 	SpriteBatch batch;
 	Texture boardTexture;
 	Sprite boardSprite;
+	Texture redTexture;
+	Sprite redSprite;
 	TextureAtlas atlas;
 	Skin skin;
-	ShapeRenderer sr;
-	OrthographicCamera camera;
-	
+
 	public Renderer(GameWorld world){
 		this.world = world;
 		batch = new SpriteBatch();
 		atlas = new TextureAtlas("data/chesspieces.pack");
 		skin = new Skin();
 		skin.addRegions(atlas);
-		
+
 		boardTexture = new Texture("data/board.png");
 		boardTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
+		redTexture = new Texture("data/redtile.png");
+		
 		boardSprite = new Sprite(boardTexture);
 		boardSprite.setY(40);
-		
-        sr = new ShapeRenderer();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.update();
+		redSprite = new Sprite(redTexture);
 	}
-	
+
 	public void render(){
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
+
 		Tile[][] tiles = world.getBoard().getTiles();
 		int[][] movement = world.getMovement();
 		Piece tempPiece;
 		PieceType tempPieceType;
 		Sprite tempSprite = null;
-		
-		camera.update();
-		sr.setProjectionMatrix(camera.combined);
-		
+
 		batch.begin();
-        sr.begin(ShapeType.FilledRectangle);
 
 		boardSprite.draw(batch);
-				
+
 		for(int y=0; y<8; y++){
 			for(int x=0; x<8; x++){
 				if(movement[x][y] == 1){
-//					to-do: draw the movement boxes
-					}
+					redSprite.setX(x*60);
+					redSprite.setY(460 - (y*60));
+					redSprite.draw(batch);
+				}
 
 				if(tiles[x][y].isOccupied()){
 					tempPiece = tiles[x][y].getPiece();
 					tempPieceType = tempPiece.getType();
-					
+
 					switch(tempPieceType){
 					case PAWN: tempSprite = (tempPiece.getColor() == PieceColor.WHITE) ? skin.getSprite("pawn") : skin.getSprite("bpawn"); break;
 					case ROOK: tempSprite = (tempPiece.getColor() == PieceColor.WHITE) ? skin.getSprite("rook") : skin.getSprite("brook"); break;
@@ -84,15 +79,14 @@ public class Renderer {
 					case QUEEN: tempSprite = (tempPiece.getColor() == PieceColor.WHITE) ? skin.getSprite("queen") : skin.getSprite("bqueen"); break;
 					case KING: tempSprite = (tempPiece.getColor() == PieceColor.WHITE) ? skin.getSprite("king") : skin.getSprite("bking"); break;
 					}
-					
+
 					tempSprite.setX((x * 60) + 5);
 					tempSprite.setY(480 - (y * 60));
 					tempSprite.draw(batch);
 				}
 			}
 		}
-		
-        sr.end();
+
 		batch.end();
 	}
 }
