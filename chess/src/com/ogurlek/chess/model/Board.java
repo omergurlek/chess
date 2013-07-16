@@ -1,9 +1,5 @@
-package com.ogurlek.chess.view;
+package com.ogurlek.chess.model;
 
-import com.ogurlek.chess.model.Piece;
-import com.ogurlek.chess.model.PieceColor;
-import com.ogurlek.chess.model.PieceType;
-import com.ogurlek.chess.model.Tile;
 
 public class Board {
 	private Tile[][] tiles = new Tile[8][8];

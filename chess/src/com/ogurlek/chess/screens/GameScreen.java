@@ -2,24 +2,23 @@ package com.ogurlek.chess.screens;
 
 import com.badlogic.gdx.Screen;
 import com.ogurlek.chess.Chess;
-import com.ogurlek.chess.view.Board;
+import com.ogurlek.chess.controller.GameWorld;
 import com.ogurlek.chess.view.Renderer;
 
 public class GameScreen implements Screen{
 
 	Chess game;
-	Board board;
+	GameWorld world;
 	Renderer render;
 	
 	public GameScreen(Chess game){
 		this.game = game;
-		this.board = new Board();
-		this.render = new Renderer(board);
+		this.world = new GameWorld();
+		this.render = new Renderer(world);
 	}
 	
 	@Override
 	public void render(float delta) {
-//		board.update();
 		render.render();
 	}
 

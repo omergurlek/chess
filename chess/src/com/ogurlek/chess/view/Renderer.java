@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.ogurlek.chess.controller.GameWorld;
 import com.ogurlek.chess.model.Piece;
 import com.ogurlek.chess.model.PieceColor;
 import com.ogurlek.chess.model.PieceType;
@@ -15,15 +16,15 @@ import com.ogurlek.chess.model.Tile;
 
 public class Renderer {
 
-	Board board;
+	GameWorld world;
 	SpriteBatch batch;
 	Texture boardTexture;
 	Sprite boardSprite;
 	TextureAtlas atlas;
 	Skin skin;
 	
-	public Renderer(Board board){
-		this.board = board;
+	public Renderer(GameWorld world){
+		this.world = world;
 		batch = new SpriteBatch();
 		atlas = new TextureAtlas("data/chesspieces.pack");
 		skin = new Skin();
@@ -40,7 +41,7 @@ public class Renderer {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
-		Tile[][] tiles = board.getTiles();
+		Tile[][] tiles = world.getBoard().getTiles();
 		Piece tempPiece;
 		PieceType tempPieceType;
 		Sprite tempSprite = null;
