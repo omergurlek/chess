@@ -27,4 +27,8 @@ public class Piece {
 	public PieceColor getColor(){
 		return this.color;
 	}
+
+	public void destroy() {
+		this.tile = null;
+	}
 }

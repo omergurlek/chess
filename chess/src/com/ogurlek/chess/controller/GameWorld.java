@@ -43,10 +43,8 @@ public class GameWorld {
 			break;
 		case MOVE_WHITE: 
 			//placeholder chesspiece movement
-			if(!occupied){
-				move(selectedPiece, touchedTile);
+			if(move(selectedPiece, touchedTile))
 				state = GameState.TURN_BLACK;
-			}
 			break;
 		case TURN_BLACK: 
 			if(occupied && (touchedPiece.getColor() == PieceColor.BLACK)){
@@ -57,10 +55,8 @@ public class GameWorld {
 			break;
 		case MOVE_BLACK:
 			//placeholder chesspiece movement
-			if(!occupied){
-				move(selectedPiece, touchedTile);
+			if(move(selectedPiece, touchedTile))
 				state = GameState.TURN_WHITE;
-			}
 			break;
 		}
 	}
@@ -91,6 +87,7 @@ public class GameWorld {
 		int y = tile.getY();
 		PieceColor color = piece.getColor();
 		PieceColor opposite = (color == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
+		int doublerow = (color == PieceColor.WHITE) ? 6 : 1;
 		int direction = (color == PieceColor.WHITE) ? 1 : -1; 
 		Tile targetTile = null;
 		PieceColor targetColor = null;
@@ -99,6 +96,15 @@ public class GameWorld {
 		boolean frontOccupied = this.board.isOccupied(x, y-direction);
 		if(!frontOccupied){
 			movement[x][y-direction] = 1;
+		}
+		
+		// Double movement possibility
+		if(y == doublerow){
+			frontOccupied = this.board.isOccupied(x, y-(2 * direction));
+			
+			if(!frontOccupied){
+				movement[x][y-(2 * direction)] = 1;
+			}
 		}
 
 		// Front right pawn attack
@@ -127,21 +133,59 @@ public class GameWorld {
 			}
 		}
 	}
+	
+	public void mapRookMovement(){
+		
+	}
+	
+	public void mapBishopMovement(){
+		
+	}
+	
+	public void mapQueenMovement(){
+		mapRookMovement();
+		mapBishopMovement();
+	}
 
-	public void move(Piece piece, Tile newTile){
+	public boolean move(Piece piece, Tile newTile){
+		int move = movement[newTile.getX()][newTile.getY()];
+		
+		if(move == 1){
+			Tile oldTile = piece.getTile();
+			oldTile.free();
+
+			if(newTile.isOccupied()){
+				newTile.getPiece().destroy();
+				newTile.free();
+			}
+			
+			piece.setTile(newTile);
+			newTile.occupy(piece);
+
+			clearMovementArray();
+			return true;
+		}
+		else {
+			if(move == 2)
+				cancelMovement();
+			
+			return false;
+		}
+	}
+	
+	public void cancelMovement(){
 		clearMovementArray();
-
-		Tile oldTile = piece.getTile();
-		oldTile.free();
-
-		piece.setTile(newTile);
-		newTile.occupy(piece);
+		
+		if(this.state == GameState.MOVE_WHITE)
+			this.state = GameState.TURN_WHITE;
+		else
+			this.state = GameState.TURN_BLACK;
 	}
 
 	public Board getBoard(){
 		return this.board;
 	}
-	
+
 	public int[][] getMovement(){
 		return movement;
 	}

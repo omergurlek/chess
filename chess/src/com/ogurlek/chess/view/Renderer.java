@@ -26,6 +26,8 @@ public class Renderer {
 	Sprite boardSprite;
 	Texture redTexture;
 	Sprite redSprite;
+	Texture blueTexture;
+	Sprite blueSprite;
 	TextureAtlas atlas;
 	Skin skin;
 
@@ -39,10 +41,12 @@ public class Renderer {
 		boardTexture = new Texture("data/board.png");
 		boardTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		redTexture = new Texture("data/redtile.png");
+		blueTexture = new Texture("data/bluetile.png");
 		
 		boardSprite = new Sprite(boardTexture);
 		boardSprite.setY(40);
 		redSprite = new Sprite(redTexture);
+		blueSprite = new Sprite(blueTexture);
 	}
 
 	public void render(){
@@ -65,6 +69,11 @@ public class Renderer {
 					redSprite.setX(x*60);
 					redSprite.setY(460 - (y*60));
 					redSprite.draw(batch);
+				}
+				else if(movement[x][y] == 2){
+					blueSprite.setX(x*60);
+					blueSprite.setY(460 - (y*60));
+					blueSprite.draw(batch);
 				}
 
 				if(tiles[x][y].isOccupied()){
