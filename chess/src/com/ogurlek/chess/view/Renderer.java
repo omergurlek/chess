@@ -1,18 +1,15 @@
 package com.ogurlek.chess.view;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.ogurlek.chess.controller.GameWorld;
+import com.ogurlek.chess.model.Movement;
+import com.ogurlek.chess.model.MovementMap;
 import com.ogurlek.chess.model.Piece;
 import com.ogurlek.chess.model.PieceColor;
 import com.ogurlek.chess.model.PieceType;
@@ -24,6 +21,8 @@ public class Renderer {
 	SpriteBatch batch;
 	Texture boardTexture;
 	Sprite boardSprite;
+	Texture yellowTexture;
+	Sprite yellowSprite;
 	Texture redTexture;
 	Sprite redSprite;
 	Texture blueTexture;
@@ -39,11 +38,13 @@ public class Renderer {
 		skin.addRegions(atlas);
 
 		boardTexture = new Texture("data/board.png");
+		yellowTexture = new Texture("data/yellowtile.png");
 		redTexture = new Texture("data/redtile.png");
 		blueTexture = new Texture("data/bluetile.png");
 		
 		boardSprite = new Sprite(boardTexture);
 		boardSprite.setY(40);
+		yellowSprite = new Sprite(yellowTexture);
 		redSprite = new Sprite(redTexture);
 		blueSprite = new Sprite(blueTexture);
 	}
@@ -53,7 +54,7 @@ public class Renderer {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		Tile[][] tiles = world.getBoard().getTiles();
-		int[][] movement = world.getMovement();
+		MovementMap movement = world.getMovement();
 		Piece tempPiece;
 		PieceType tempPieceType;
 		Sprite tempSprite = null;
@@ -64,12 +65,17 @@ public class Renderer {
 
 		for(int y=0; y<8; y++){
 			for(int x=0; x<8; x++){
-				if(movement[x][y] == 1){
+				if(movement.getMovement(x,y) == Movement.MOVE){
+					yellowSprite.setX(x*60);
+					yellowSprite.setY(460 - (y*60));
+					yellowSprite.draw(batch);
+				}
+				if(movement.getMovement(x,y) == Movement.ATTACK){
 					redSprite.setX(x*60);
 					redSprite.setY(460 - (y*60));
 					redSprite.draw(batch);
 				}
-				else if(movement[x][y] == 2){
+				else if(movement.getMovement(x,y) == Movement.SELF){
 					blueSprite.setX(x*60);
 					blueSprite.setY(460 - (y*60));
 					blueSprite.draw(batch);
