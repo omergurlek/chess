@@ -1,7 +1,7 @@
 package com.ogurlek.chess.model;
 
 
-public class Piece {
+public class Piece implements Cloneable {
 	private Tile tile;
 	private PieceType type;
 	private PieceColor color;
@@ -30,5 +30,10 @@ public class Piece {
 
 	public void destroy() {
 		this.tile = null;
+	}
+	
+	@Override
+	public Piece clone() {
+		return new Piece(this.tile, this.type, this.color);
 	}
 }

@@ -23,4 +23,16 @@ public class MovementMap {
 	public Movement getMovement(int x, int y){
 		return this.map[x][y];
 	}
+
+	public boolean hasMove() {
+		for(int x=0; x<8; x++){
+			for(int y=0; y<8; y++){
+				Movement move = map[x][y];
+				
+				if(move == Movement.MOVE || move == Movement.ATTACK)
+					return true;
+			}
+		}
+		return false;
+	}
 }
