@@ -1,6 +1,8 @@
 package com.ogurlek.chess.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.ogurlek.chess.model.Board;
 import com.ogurlek.chess.model.GameState;
 import com.ogurlek.chess.model.Movement;
@@ -8,20 +10,33 @@ import com.ogurlek.chess.model.MovementMap;
 import com.ogurlek.chess.model.Piece;
 import com.ogurlek.chess.model.PieceColor;
 import com.ogurlek.chess.model.Tile;
+import com.ogurlek.chess.view.Renderer;
 
 public class GameWorld {
 
 	GameState state;
 	Board board;
+	InputMultiplexer im;
 	Piece selectedPiece;
 	MovementMap movement;
+	Renderer render;
 
 	public GameWorld(){
 		this.state = GameState.TURN_WHITE;
 		this.board = new Board();
 		this.selectedPiece = null;
 		this.movement = new MovementMap();
-		Gdx.input.setInputProcessor(new InputHandler(this));
+		
+		this.im = new InputMultiplexer(new InputHandler(this));
+		Gdx.input.setInputProcessor(this.im);
+	}
+	
+	public void setRenderer(Renderer render){
+		this.render = render;
+	}
+	
+	public void addHUDhandler(Stage hud){
+		this.im.addProcessor(hud);
 	}
 
 	public void touchedBoard(int x, int y){
@@ -73,7 +88,8 @@ public class GameWorld {
 	private MovementMap mapMovementArray(Piece piece, MovementMap movement, Board board, boolean guarding){
 		Tile tile = piece.getTile();
 
-		movement.addSelf(tile.getX(), tile.getY());
+		if(!guarding)
+			movement.addSelf(tile.getX(), tile.getY());
 
 		switch(piece.getType()){
 		case PAWN: return mapPawnMovement(piece, movement, board, guarding);
@@ -133,7 +149,6 @@ public class GameWorld {
 						}
 					}
 				}
-
 				// If guarding against a moving king
 				else{
 					movement.addAttack(x+side, y-direction);
@@ -303,8 +318,13 @@ public class GameWorld {
 				if(move == Movement.ATTACK || move == Movement.MOVE){
 					move(hypoPiece, hypothetical.getTile(i, j), movement, true);
 
-					if(isCheck(color, hypothetical))
+					if(isCheck(color, hypothetical)){
 						movement.removeMovement(i, j);
+
+						hypothetical = new Board(this.board);
+						hypoPiece = piece.clone();
+						hypothetical.placePiece(hypoPiece);
+					}
 				}
 			}
 		}
@@ -314,15 +334,15 @@ public class GameWorld {
 
 
 	private MovementMap getPlayerMovements(PieceColor color, Board board){
-		Piece[] enemies = board.getPieces(color);
+		Piece[] pieces = board.getPieces(color);
 
-		MovementMap enemyMovements = new MovementMap();
-		for(Piece enemy : enemies){
-			if(enemy != null)
-				enemyMovements = mapMovementArray(enemy, enemyMovements, board, true);
+		MovementMap playerMovements = new MovementMap();
+		for(Piece piece : pieces){
+			if(piece != null)
+				playerMovements = mapMovementArray(piece, playerMovements, board, true);
 		}
 
-		return enemyMovements;
+		return playerMovements;
 	}
 
 	private boolean isDangerous(int x, int y, MovementMap enemyMovements){
@@ -380,7 +400,7 @@ public class GameWorld {
 	}
 
 	private void gameOver(PieceColor winner){
-		System.out.println("Checkmate!");
+		this.render.checkmate(winner);
 	}
 
 	private void move(Piece piece, Tile newTile, MovementMap movement, boolean hypothetical){
@@ -407,12 +427,15 @@ public class GameWorld {
 					}
 					else{
 						this.state = (color == PieceColor.WHITE) ? GameState.TURN_BLACK_CHECK : GameState.TURN_WHITE_CHECK;
-						System.out.println("Check");
+						this.render.switchTurns(opposite);
+						this.render.check();
 					}
 				}
 
-				else
+				else{
 					this.state = (color == PieceColor.WHITE) ? GameState.TURN_BLACK : GameState.TURN_WHITE;
+					this.render.switchTurns(opposite);
+				}
 
 				clearMovementArray();
 			}

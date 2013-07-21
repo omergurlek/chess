@@ -17,12 +17,13 @@ public class InputHandler implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if((screenY >= 110) && (screenY <= 590))	{
-			world.touchedBoard(screenX, screenY - 110);
+		if((screenY >= 160) && (screenY <= 640))	{
+			world.touchedBoard(screenX, screenY - 160);
 			return true;
 		}
-		else
+		else{
 			return false;
+		}
 	}
 
 	@Override

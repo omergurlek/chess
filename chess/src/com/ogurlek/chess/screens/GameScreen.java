@@ -14,12 +14,14 @@ public class GameScreen implements Screen{
 	public GameScreen(Chess game){
 		this.game = game;
 		this.world = new GameWorld();
-		this.render = new Renderer(world);
+		this.render = new Renderer(world, game);
+		this.world.addHUDhandler(this.render.getHUD());
+		this.world.setRenderer(render);
 	}
 	
 	@Override
 	public void render(float delta) {
-		render.render();
+		render.render(delta);
 	}
 
 	@Override
@@ -49,6 +51,6 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void dispose() {
-		
+
 	}
 }
