@@ -23,6 +23,10 @@ public class MovementMap {
 	public Movement getMovement(int x, int y){
 		return this.map[x][y];
 	}
+	
+	public void removeMovement(int x, int y){
+		this.map[x][y] = null;
+	}
 
 	public boolean hasMove() {
 		for(int x=0; x<8; x++){

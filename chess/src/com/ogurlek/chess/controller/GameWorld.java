@@ -37,6 +37,7 @@ public class GameWorld {
 
 		switch(state){
 		case TURN_WHITE: 
+		case TURN_WHITE_CHECK:
 			if(occupied && (touchedPiece.getColor() == PieceColor.WHITE)){
 				selectedPiece = touchedPiece;
 				mapMovement(selectedPiece);
@@ -44,9 +45,10 @@ public class GameWorld {
 			}
 			break;
 		case MOVE_WHITE: 
-			move(selectedPiece, touchedTile);
+			move(selectedPiece, touchedTile, this.movement, false);
 			break;
 		case TURN_BLACK: 
+		case TURN_BLACK_CHECK:
 			if(occupied && (touchedPiece.getColor() == PieceColor.BLACK)){
 				selectedPiece = touchedPiece;
 				mapMovement(selectedPiece);
@@ -54,7 +56,7 @@ public class GameWorld {
 			}
 			break;
 		case MOVE_BLACK:
-			move(selectedPiece, touchedTile);
+			move(selectedPiece, touchedTile, this.movement, false);
 			break;
 		}
 	}
@@ -65,26 +67,26 @@ public class GameWorld {
 
 	private void mapMovement(Piece piece){
 		MovementMap move = new MovementMap();
-		this.movement = mapMovementArray(piece, move, false);
+		this.movement = mapMovementArray(piece, move, this.board, false);
 	}
 
-	private MovementMap mapMovementArray(Piece piece, MovementMap movement, boolean guarding){
+	private MovementMap mapMovementArray(Piece piece, MovementMap movement, Board board, boolean guarding){
 		Tile tile = piece.getTile();
 
 		movement.addSelf(tile.getX(), tile.getY());
 
 		switch(piece.getType()){
-		case PAWN: return mapPawnMovement(piece, movement, guarding);
-		case ROOK: return mapRookMovement(piece, movement, guarding);
-		case KNIGHT: return mapKnightMovement(piece, movement, guarding);
-		case BISHOP: return mapBishopMovement(piece, movement, guarding);
-		case QUEEN: return mapQueenMovement(piece, movement, guarding);
-		case KING: return mapKingMovement(piece, movement, guarding);
+		case PAWN: return mapPawnMovement(piece, movement, board, guarding);
+		case ROOK: return mapRookMovement(piece, movement, board, guarding);
+		case KNIGHT: return mapKnightMovement(piece, movement, board, guarding);
+		case BISHOP: return mapBishopMovement(piece, movement, board, guarding);
+		case QUEEN: return mapQueenMovement(piece, movement, board, guarding);
+		case KING: return mapKingMovement(piece, movement, board, guarding);
 		default: return movement;
 		}
 	}
 
-	private MovementMap mapPawnMovement(Piece piece, MovementMap movement, boolean guarding){
+	private MovementMap mapPawnMovement(Piece piece, MovementMap movement, Board board, boolean guarding){
 		Tile tile = piece.getTile();
 		int x = tile.getX();
 		int y = tile.getY();
@@ -100,14 +102,14 @@ public class GameWorld {
 		if(!guarding){
 
 			// Front pawn movement
-			boolean frontOccupied = this.board.isOccupied(x, y-direction);
+			boolean frontOccupied = board.isOccupied(x, y-direction);
 			if(!frontOccupied){
 				movement.addMove(x, y-direction);
 			}
 
 			// Double movement possibility
 			if(y == doublerow){
-				frontOccupied = this.board.isOccupied(x, y-(2 * direction));
+				frontOccupied = board.isOccupied(x, y-(2 * direction));
 
 				if(!frontOccupied){
 					movement.addMove(x, y-(2 * direction));
@@ -122,7 +124,7 @@ public class GameWorld {
 			if(targetTile != null){
 
 				if(!guarding){
-					if(this.board.isOccupied(x+side,y-direction)){
+					if(board.isOccupied(x+side,y-direction)){
 
 						targetColor = targetTile.getPiece().getColor();
 
@@ -138,13 +140,14 @@ public class GameWorld {
 				}
 			}
 		}
-		
-		// TO-DO: Remove check-resulting moves.
+
+		if(!guarding)
+			movement = removeInvalidMovements(piece, movement);
 
 		return movement;
 	}
 
-	private MovementMap mapKnightMovement(Piece piece, MovementMap movement, boolean guarding){
+	private MovementMap mapKnightMovement(Piece piece, MovementMap movement, Board board, boolean guarding){
 		Tile tile = piece.getTile();
 		int x = tile.getX();
 		int y = tile.getY();
@@ -177,13 +180,14 @@ public class GameWorld {
 				}
 			}
 		}
-		
-		// TO-DO: Remove check-resulting moves.
+
+		if(!guarding)
+			movement = removeInvalidMovements(piece, movement);
 
 		return movement;
 	}
 
-	private MovementMap mapContinuousMovement(Piece piece, MovementMap movement, boolean guarding, int[][] directionMultipliers){
+	private MovementMap mapContinuousMovement(Piece piece, MovementMap movement, Board board, boolean guarding, int[][] directionMultipliers){
 		Tile tile = piece.getTile();
 		int x = tile.getX();
 		int y = tile.getY();
@@ -218,29 +222,30 @@ public class GameWorld {
 				}
 			}
 		}
-		
-		// TO-DO: Remove check-resulting moves.
+
+		if(!guarding)
+			movement = removeInvalidMovements(piece, movement);
 
 		return movement;
 	}
 
-	private MovementMap mapRookMovement(Piece piece, MovementMap movement, boolean guarding){
+	private MovementMap mapRookMovement(Piece piece, MovementMap movement, Board board, boolean guarding){
 		int[][] directionMultipliers = {{1,0}, {-1,0}, {0,1}, {0,-1}};
 
-		return mapContinuousMovement(piece, movement, guarding, directionMultipliers);
+		return mapContinuousMovement(piece, movement, board, guarding, directionMultipliers);
 	}
 
-	private MovementMap mapBishopMovement(Piece piece, MovementMap movement, boolean guarding){
+	private MovementMap mapBishopMovement(Piece piece, MovementMap movement, Board board, boolean guarding){
 		int[][] directionMultipliers = {{1,1}, {1,-1}, {-1,1}, {-1,-1}};
 
-		return mapContinuousMovement(piece, movement, guarding, directionMultipliers);
+		return mapContinuousMovement(piece, movement, board, guarding, directionMultipliers);
 	}
 
-	private MovementMap mapQueenMovement(Piece piece, MovementMap movement, boolean guarding){
-		return mapBishopMovement(piece, mapRookMovement(piece, movement, guarding), guarding);
+	private MovementMap mapQueenMovement(Piece piece, MovementMap movement, Board board, boolean guarding){
+		return mapBishopMovement(piece, mapRookMovement(piece, movement, board, guarding), board, guarding);
 	}
 
-	private MovementMap mapKingMovement(Piece piece, MovementMap movement, boolean guarding){
+	private MovementMap mapKingMovement(Piece piece, MovementMap movement, Board board, boolean guarding){
 		Tile tile = piece.getTile();
 		int x = tile.getX();
 		int y = tile.getY();
@@ -258,10 +263,10 @@ public class GameWorld {
 
 					// If planning a move
 					if(!guarding){
-						MovementMap enemyMovements = getPlayerMovements(opposite);
+						MovementMap enemyMovements = getPlayerMovements(opposite, board);
 
 						if(!isDangerous(x+i,y+j,enemyMovements)){
-							if(this.board.isOccupied(x+i, y+j)){
+							if(board.isOccupied(x+i, y+j)){
 								targetColor = targetTile.getPiece().getColor();
 
 								if(targetColor == opposite){
@@ -286,13 +291,35 @@ public class GameWorld {
 		return movement;
 	}
 
-	private MovementMap getPlayerMovements(PieceColor color){
-		Piece[] enemies = this.board.getPieces(color);
+	private MovementMap removeInvalidMovements(Piece piece,	MovementMap movement) {
+		PieceColor color = piece.getColor();
+		Board hypothetical = new Board(this.board);
+		Piece hypoPiece = piece.clone();
+		hypothetical.placePiece(hypoPiece);
+
+		for(int i=0; i<8; i++){
+			for(int j=0; j<8; j++){
+				Movement move = movement.getMovement(i, j);
+				if(move == Movement.ATTACK || move == Movement.MOVE){
+					move(hypoPiece, hypothetical.getTile(i, j), movement, true);
+
+					if(isCheck(color, hypothetical))
+						movement.removeMovement(i, j);
+				}
+			}
+		}
+
+		return movement;
+	}
+
+
+	private MovementMap getPlayerMovements(PieceColor color, Board board){
+		Piece[] enemies = board.getPieces(color);
 
 		MovementMap enemyMovements = new MovementMap();
 		for(Piece enemy : enemies){
 			if(enemy != null)
-				enemyMovements = mapMovementArray(enemy, enemyMovements, true);
+				enemyMovements = mapMovementArray(enemy, enemyMovements, board, true);
 		}
 
 		return enemyMovements;
@@ -310,7 +337,7 @@ public class GameWorld {
 
 	private boolean isCheck(PieceColor color, Board board){
 		PieceColor opposite = (color == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE; 
-		MovementMap enemyMovements = getPlayerMovements(opposite);
+		MovementMap enemyMovements = getPlayerMovements(opposite, board);
 		Piece king = board.getKing(color);
 		int x = king.getTile().getX();
 		int y = king.getTile().getY();
@@ -325,7 +352,7 @@ public class GameWorld {
 		Piece king = this.board.getKing(color);
 
 		// Can King move anywhere?
-		MovementMap kingMovements = mapKingMovement(king, new MovementMap(), false);
+		MovementMap kingMovements = mapKingMovement(king, new MovementMap(), this.board, false);
 
 		for(int x=0; x<8; x++){
 			for(int y=0; y<8; y++){
@@ -342,7 +369,7 @@ public class GameWorld {
 		for(Piece piece : pieces){
 			if(piece != null){
 				pieceMovements = new MovementMap();
-				pieceMovements = mapMovementArray(piece, pieceMovements, false);
+				pieceMovements = mapMovementArray(piece, pieceMovements, this.board, false);
 
 				if(pieceMovements.hasMove())
 					return false;
@@ -353,10 +380,10 @@ public class GameWorld {
 	}
 
 	private void gameOver(PieceColor winner){
-		// Game over method
+		System.out.println("Checkmate!");
 	}
 
-	private void move(Piece piece, Tile newTile){
+	private void move(Piece piece, Tile newTile, MovementMap movement, boolean hypothetical){
 		PieceColor color = piece.getColor();
 		PieceColor opposite = (color == PieceColor.WHITE) ? PieceColor.BLACK : PieceColor.WHITE;
 		Movement move = movement.getMovement(newTile.getX(), newTile.getY());
@@ -373,18 +400,22 @@ public class GameWorld {
 			piece.setTile(newTile);
 			newTile.occupy(piece);
 
-			if(isCheck(opposite, this.board)){
-				if(isCheckmate(opposite)){
-					gameOver(color);
+			if(!hypothetical){
+				if(isCheck(opposite, this.board)){
+					if(isCheckmate(opposite)){
+						gameOver(color);
+					}
+					else{
+						this.state = (color == PieceColor.WHITE) ? GameState.TURN_BLACK_CHECK : GameState.TURN_WHITE_CHECK;
+						System.out.println("Check");
+					}
 				}
+
 				else
-					state =  (color == PieceColor.WHITE) ? GameState.TURN_BLACK_CHECK : GameState.TURN_WHITE_CHECK;
+					this.state = (color == PieceColor.WHITE) ? GameState.TURN_BLACK : GameState.TURN_WHITE;
+
+				clearMovementArray();
 			}
-
-			else
-				state =  (color == PieceColor.WHITE) ? GameState.TURN_BLACK : GameState.TURN_WHITE;
-
-			clearMovementArray();
 		}
 		else {
 			if(move == Movement.SELF)
@@ -399,6 +430,10 @@ public class GameWorld {
 			this.state = GameState.TURN_WHITE;
 		else
 			this.state = GameState.TURN_BLACK;
+	}
+
+	public GameState getState(){
+		return this.state;
 	}
 
 	public Board getBoard(){

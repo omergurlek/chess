@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.ogurlek.chess.controller.GameWorld;
+import com.ogurlek.chess.model.GameState;
 import com.ogurlek.chess.model.Movement;
 import com.ogurlek.chess.model.MovementMap;
 import com.ogurlek.chess.model.Piece;
@@ -59,10 +60,16 @@ public class Renderer {
 		PieceType tempPieceType;
 		Sprite tempSprite = null;
 
+		GameState state = this.world.getState();
+
 		batch.begin();
 
 		boardSprite.draw(batch);
 
+		if(state == GameState.TURN_BLACK_CHECK || state == GameState.TURN_WHITE_CHECK){
+			// Set check label.
+		}
+		
 		for(int y=0; y<8; y++){
 			for(int x=0; x<8; x++){
 				if(movement.getMovement(x,y) == Movement.MOVE){

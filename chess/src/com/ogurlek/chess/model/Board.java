@@ -69,6 +69,15 @@ public class Board {
 			}
 		}
 	}
+	
+	public void placePiece(Piece piece){
+		int x = piece.getTile().getX();
+		int y = piece.getTile().getY();
+		
+		Tile newTile = getTile(x, y);
+		newTile.occupy(piece);
+		piece.setTile(newTile);
+	}
 
 	public boolean isOccupied(int x, int y){
 		Tile tile = getTile(x, y);
