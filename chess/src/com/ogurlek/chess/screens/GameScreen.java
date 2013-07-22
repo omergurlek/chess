@@ -21,12 +21,12 @@ public class GameScreen implements Screen{
 	
 	@Override
 	public void render(float delta) {
-		render.render(delta);
+		this.render.render(delta);
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		
+		this.render.resize(width, height);
 	}
 
 	@Override

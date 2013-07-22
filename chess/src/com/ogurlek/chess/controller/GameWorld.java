@@ -2,6 +2,7 @@ package com.ogurlek.chess.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.ogurlek.chess.model.Board;
 import com.ogurlek.chess.model.GameState;
@@ -16,10 +17,12 @@ public class GameWorld {
 
 	GameState state;
 	Board board;
+	Rectangle viewport;
 	InputMultiplexer im;
 	Piece selectedPiece;
 	MovementMap movement;
 	Renderer render;
+	InputHandler ih;
 
 	public GameWorld(){
 		this.state = GameState.TURN_WHITE;
@@ -27,7 +30,8 @@ public class GameWorld {
 		this.selectedPiece = null;
 		this.movement = new MovementMap();
 		
-		this.im = new InputMultiplexer(new InputHandler(this));
+		this.ih = new InputHandler(this);
+		this.im = new InputMultiplexer(this.ih);
 		Gdx.input.setInputProcessor(this.im);
 	}
 	
@@ -38,10 +42,17 @@ public class GameWorld {
 	public void addHUDhandler(Stage hud){
 		this.im.addProcessor(hud);
 	}
+	
+	public void updateViewport(Rectangle viewport, float cropX, float cropY){
+		this.viewport = viewport;
+		this.ih.updateViewPort(viewport, cropX, cropY);
+	}
 
-	public void touchedBoard(int x, int y){
-		int tileX = x / 60;
-		int tileY = y / 60;
+	public void touchedBoard(float x, float y){
+		float tileSize = this.viewport.getWidth() / 8;
+		
+		int tileX = (int) x / (int) tileSize;
+		int tileY = (int) y / (int) tileSize;
 
 		Tile touchedTile = board.getTile(tileX, tileY);
 		boolean occupied = touchedTile.isOccupied();
@@ -121,14 +132,14 @@ public class GameWorld {
 			boolean frontOccupied = board.isOccupied(x, y-direction);
 			if(!frontOccupied){
 				movement.addMove(x, y-direction);
-			}
+				
+				// Double movement possibility
+				if(y == doublerow){
+					frontOccupied = board.isOccupied(x, y-(2 * direction));
 
-			// Double movement possibility
-			if(y == doublerow){
-				frontOccupied = board.isOccupied(x, y-(2 * direction));
-
-				if(!frontOccupied){
-					movement.addMove(x, y-(2 * direction));
+					if(!frontOccupied){
+						movement.addMove(x, y-(2 * direction));
+					}
 				}
 			}
 		}
@@ -311,20 +322,21 @@ public class GameWorld {
 		Board hypothetical = new Board(this.board);
 		Piece hypoPiece = piece.clone();
 		hypothetical.placePiece(hypoPiece);
+		Movement move;
 
 		for(int i=0; i<8; i++){
 			for(int j=0; j<8; j++){
-				Movement move = movement.getMovement(i, j);
+				move = movement.getMovement(i, j);
 				if(move == Movement.ATTACK || move == Movement.MOVE){
 					move(hypoPiece, hypothetical.getTile(i, j), movement, true);
 
 					if(isCheck(color, hypothetical)){
 						movement.removeMovement(i, j);
-
-						hypothetical = new Board(this.board);
-						hypoPiece = piece.clone();
-						hypothetical.placePiece(hypoPiece);
 					}
+					
+					hypothetical = new Board(this.board);
+					hypoPiece = piece.clone();
+					hypothetical.placePiece(hypoPiece);
 				}
 			}
 		}

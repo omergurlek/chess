@@ -5,9 +5,10 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/chess"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry exported="true" kind="lib" path="/chess/libs/gdx.jar" sourcepath="/chess/libs/gdx-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-android.jar" sourcepath="libs/gdx-backend-android-sources.jar"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry kind="lib" path="C:/adt-bundle/adt-bundle-windows-x86_64-20130522/sdk"/>
+	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-android.jar" sourcepath="libs/gdx-backend-android-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="/chess/libs/gdx.jar" sourcepath="/chess/libs/gdx-sources.jar"/>
+	<classpathentry kind="lib" path="/chess/libs/tween-engine-api.jar" sourcepath="/chess/libs/tween-engine-api-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/tween-engine-api.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
