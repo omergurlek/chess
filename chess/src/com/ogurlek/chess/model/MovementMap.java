@@ -16,6 +16,14 @@ public class MovementMap {
 		this.map[x][y] = Movement.ATTACK;
 	}
 	
+	public void addLeftCastle(int x, int y) {
+		this.map[x][y] = Movement.LEFT_CASTLE;
+	}
+	
+	public void addRightCastle(int x, int y) {
+		this.map[x][y] = Movement.RIGHT_CASTLE;
+	}
+	
 	public void addSelf(int x, int y){
 		this.map[x][y] = Movement.SELF;
 	}

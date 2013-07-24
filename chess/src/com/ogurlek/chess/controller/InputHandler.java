@@ -1,14 +1,16 @@
 package com.ogurlek.chess.controller;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.Rectangle;
+import com.ogurlek.chess.GlobalSettings;
 
 public class InputHandler implements InputProcessor {
 
 	GameWorld world;
-	Rectangle viewport;
-	float cropX;
-	float cropY;
+	float vWidth;
+	float vHeight;
+	float topMargin;
+	float leftMargin;
 	
 	public InputHandler(GameWorld world){
 		this.world = world;
@@ -19,37 +21,33 @@ public class InputHandler implements InputProcessor {
 		return false;
 	}
 
-	public void updateViewPort(Rectangle viewport, float cropX, float cropY) {
-		this.viewport = viewport;
-		this.cropX = cropX;
-		this.cropY = cropY;
+
+	public void updateViewPort(float vWidth, float vHeight) {
+		this.vWidth = vWidth;
+		this.vHeight = vHeight;
+		
+		this.topMargin = (vHeight - GlobalSettings.VIRTUAL_HEIGHT) / 2;
+		this.leftMargin = (vWidth - GlobalSettings.VIRTUAL_WIDTH) / 2;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		float viewportX = (float) screenX - cropX;
-		float viewportY = (float) screenY - cropY;
+		float percentX = (float) screenX / (float) Gdx.graphics.getWidth();
+		float percentY = (float) screenY / (float) Gdx.graphics.getHeight(); 
 		
-		float viewportWidth = this.viewport.getWidth();
-		float viewportHeight = this.viewport.getHeight();
-		float hudSpace = viewportHeight - viewportWidth;
-		float boardLimit = hudSpace + viewportWidth;
-		
-		if((viewportX >= 0) && (viewportX <= viewportWidth) && (viewportY >= hudSpace) && (viewportY <= boardLimit)){
-			world.touchedBoard(viewportX, viewportY - hudSpace);
+		float viewportX = percentX * vWidth;
+		float viewportY = percentY * vHeight;
+				
+		float realX = viewportX - leftMargin;
+		float realY = viewportY - topMargin;
+				
+		if((realX >= 0) && (realX <= GlobalSettings.VIRTUAL_WIDTH) && (realY >= GlobalSettings.HUD_SPACE) && (realY <= GlobalSettings.VIRTUAL_HEIGHT)){
+			world.touchedBoard(realX, realY - GlobalSettings.HUD_SPACE);
 			return true;
 		}
 		else{
 			return false;
 		}
-	
-//		if((screenY >= 160) && (screenY <= 640)){
-//			world.touchedBoard(screenX, screenY - 160);
-//			return true;
-//		}
-//		else{
-//			return false;
-//		}
 	}
 
 	@Override

@@ -15,15 +15,11 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Scaling;
 import com.ogurlek.chess.Chess;
+import com.ogurlek.chess.GlobalSettings;
 import com.ogurlek.chess.tweens.SpriteTween;
 
 public class SplashScreen implements Screen{
-
-	private static final int VIRTUAL_WIDTH = 480;
-	private static final int VIRTUAL_HEIGHT = 640;
 
 	OrthographicCamera camera;
 	Rectangle viewport;
@@ -39,44 +35,49 @@ public class SplashScreen implements Screen{
 
 	@Override
 	public void render(float delta) {
-		camera.update();
-        camera.apply(Gdx.gl10);
- 
-        Gdx.gl.glViewport((int) viewport.x, (int) viewport.y, (int) viewport.width, (int) viewport.height);
-        
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		manager.update(delta);
 		
+		manager.update(delta);
+		camera.update();
+
+		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		splashSprite.draw(batch);
 		batch.end();
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public void resize(int width, int height) {
-		Vector2 newVirtualRes= new Vector2(0f, 0f);
-		Vector2 crop = new Vector2(width, height);
+		float ratio = (float) height / (float) width;
 
-		newVirtualRes.set(Scaling.fit.apply((float)VIRTUAL_WIDTH, (float)VIRTUAL_HEIGHT, (float)width, (float)height));
-
-		crop.sub(newVirtualRes);
-		crop.mul(.5f);
+		float vHeight;
+		float vWidth;
 		
-		viewport = new Rectangle(crop.x, crop.y, newVirtualRes.x, newVirtualRes.y);
+		if(ratio > GlobalSettings.ASPECT_RATIO){
+			vHeight = GlobalSettings.VIRTUAL_WIDTH * ratio;
+			vWidth = GlobalSettings.VIRTUAL_WIDTH;
+		}
+		else{
+			vHeight = GlobalSettings.VIRTUAL_HEIGHT;
+			vWidth = GlobalSettings.VIRTUAL_HEIGHT / ratio;
+		}
+
+		camera.viewportHeight = vHeight;
+		camera.viewportWidth = vWidth;
 	}
 
 	@Override
 	public void show() {
-		camera = new OrthographicCamera(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+		camera = new OrthographicCamera(GlobalSettings.VIRTUAL_WIDTH, GlobalSettings.VIRTUAL_HEIGHT);
+		camera.translate(GlobalSettings.VIRTUAL_WIDTH/2, GlobalSettings.VIRTUAL_HEIGHT/2);
 
 		splashTexture = new Texture("data/splashscreen.png");
 		splashTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		splashSprite = new Sprite(splashTexture);
         splashSprite.setColor(1, 1, 1, 0);
-        splashSprite.setY(Gdx.graphics.getHeight() / 2 - (splashSprite.getHeight() / 2));
+        splashSprite.setY(camera.viewportHeight / 2 - (splashSprite.getHeight() / 2));
 
 		batch = new SpriteBatch();
 		

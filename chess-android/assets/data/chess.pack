@@ -1,89 +1,136 @@
 
-chesspieces.png
+chess.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+Atlas/chesspieces
+  rotate: false
+  xy: 1, 1
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+
+chess2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+board
+  rotate: false
+  xy: 1, 1
+  size: 480, 480
+  orig: 480, 480
+  offset: 0, 0
+  index: -1
 bbishop
   rotate: false
-  xy: 1, 165
+  xy: 483, 401
   size: 50, 80
   orig: 50, 80
   offset: 0, 0
   index: -1
 bishop
   rotate: false
-  xy: 1, 83
+  xy: 483, 319
   size: 50, 80
   orig: 50, 80
   offset: 0, 0
   index: -1
 bking
   rotate: false
-  xy: 53, 165
+  xy: 535, 401
   size: 50, 80
   orig: 50, 80
   offset: 0, 0
   index: -1
 bknight
   rotate: false
-  xy: 1, 1
+  xy: 483, 237
   size: 50, 80
   orig: 50, 80
   offset: 0, 0
   index: -1
 bpawn
   rotate: false
-  xy: 53, 83
+  xy: 535, 319
   size: 50, 80
   orig: 50, 80
   offset: 0, 0
   index: -1
 bqueen
   rotate: false
-  xy: 105, 165
+  xy: 587, 401
   size: 50, 80
   orig: 50, 80
   offset: 0, 0
   index: -1
 brook
   rotate: false
-  xy: 53, 1
+  xy: 483, 155
   size: 50, 80
   orig: 50, 80
   offset: 0, 0
   index: -1
 king
   rotate: false
-  xy: 105, 83
+  xy: 535, 237
   size: 50, 80
   orig: 50, 80
   offset: 0, 0
   index: -1
 knight
   rotate: false
-  xy: 157, 165
+  xy: 587, 319
   size: 50, 80
   orig: 50, 80
   offset: 0, 0
   index: -1
 pawn
   rotate: false
-  xy: 105, 1
+  xy: 639, 401
   size: 50, 80
   orig: 50, 80
   offset: 0, 0
   index: -1
 queen
   rotate: false
-  xy: 157, 83
+  xy: 483, 73
   size: 50, 80
   orig: 50, 80
   offset: 0, 0
   index: -1
 rook
   rotate: false
-  xy: 157, 1
+  xy: 535, 155
   size: 50, 80
   orig: 50, 80
+  offset: 0, 0
+  index: -1
+bluetile
+  rotate: false
+  xy: 691, 421
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+purpletile
+  rotate: false
+  xy: 753, 421
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+redtile
+  rotate: false
+  xy: 815, 421
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+yellowtile
+  rotate: false
+  xy: 877, 421
+  size: 60, 60
+  orig: 60, 60
   offset: 0, 0
   index: -1

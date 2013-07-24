@@ -5,11 +5,13 @@ public class Piece implements Cloneable {
 	private Tile tile;
 	private PieceType type;
 	private PieceColor color;
+	private boolean moved;
 	
 	public Piece(Tile tile, PieceType type, PieceColor color){
 		this.tile = tile;
 		this.type = type;
 		this.color = color;
+		this.moved = false;
 	}
 	
 	public Tile getTile(){
@@ -24,12 +26,24 @@ public class Piece implements Cloneable {
 		return this.type;
 	}
 	
+	public void setType(PieceType type){
+		this.type = type;
+	}
+	
 	public PieceColor getColor(){
 		return this.color;
 	}
 
 	public void destroy() {
 		this.tile = null;
+	}
+	
+	public boolean hasMoved(){
+		return this.moved;
+	}
+	
+	public void setMoved(boolean moved){
+		this.moved = moved;
 	}
 	
 	@Override
